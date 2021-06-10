@@ -1,10 +1,10 @@
 /* CR Calabrese, June 2021 */
 
 .homer {
-    background-image: url("homer.jpg");
+    content: url("homer.jpg");
     width:  calc(333px / 2);
     height: calc(500px / 4);
-    object-fit: cover;
+    object-fit: none;
 
 }
 
