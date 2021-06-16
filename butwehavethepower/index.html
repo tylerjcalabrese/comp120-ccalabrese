@@ -15,6 +15,33 @@
 
 <script>
 	// Complete this section and create a CSS file named style.css
+    var vid = document.getElementById("butwehavethepower");
+    vid.addEventListener('timeupdate', (event) => {
+        document.getElementById("lyrics").innerHTML = (
+            vid.currentTime < 5    ? "LISA:"                        :
+            vid.currentTime < 8.5  ? "Come gather round, children," :
+            vid.currentTime < 11   ? "It's high time ye learned"    :
+            vid.currentTime < 12.5 ? "'Bout a hero named Homer"     :
+            vid.currentTime < 17   ? "And a devil named Burns."     :
+            vid.currentTime < 19   ? "We'll march 'till we drop"    :
+            vid.currentTime < 21.5 ? "The girls and the fellas."    :
+            vid.currentTime < 23   ?  "We'll fight 'till the death" :
+            vid.currentTime < 28   ? "Or else fold like umbrellas." : 
+            vid.currentTime < 37   ? ""                             :
+            vid.currentTime < 40.5 ? "So we'll march day and night" :
+            vid.currentTime < 43   ? "By the big cooling tower."    : 
+            vid.currentTime < 45.5 ? "They have the plant"          :
+            vid.currentTime < 50   ? "But we have the power."       : // 52, 56, 72, 75.5, 78, 79.5, 82...
+            vid.currentTime < 52   ? ""                             :
+            vid.currentTime < 56   ? "LENNY: Now do classical gas!" :
+            vid.currentTime < 72   ? ""                             :
+            vid.currentTime < 75.5 ? "So we'll march day and night" :
+            vid.currentTime < 77.5 ? "By the big cooling tower."    :
+            vid.currentTime < 80   ? "They have the plant"          :
+                                     "But we have the power...."
+            
+        );
+    });
 </script>
 </body>
 </html>	
