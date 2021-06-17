@@ -48,6 +48,18 @@ index-mini.js size:   1.1 kB
 index-mini.js time:   25ms
 
 ### My thoughts on the optimization
+I'm not sure why certain things went up, like the total time and
+loading time. Certain things are really predictable, though, like
+the size changes for the three files. `index.html` got exactly 10
+bytes bigger because I appended 5 characters ("-mini") onto each of the
+JS and CSS filenames. The JS and CSS files got significantly smaller
+from being minified.
 
+The JS and CSS loading times went down significantly, too, which is
+what I thought would happen. I'm not so sure why the `index.html`
+loading time went down, or why it went down so much, considering I
+cleared my cache before checking the performance the second time.
+Perhaps this has to do with moving the JS includes to the bottom
+of the document and the CSS include to the top.
 
 
