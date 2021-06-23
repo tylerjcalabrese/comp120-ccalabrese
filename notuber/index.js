@@ -1,17 +1,47 @@
 let map;
 
-var my_latitude, my_longitude;
+
+const carIcon = "https://tuftsdev.github.io/WebEngineering/assignments/summer2021/car.png";
 
 // callbacks for navigator.geolocation.getCurrentPosition()
 function posSuccess(gpos)
 {
     userLoc = new google.maps.LatLng(gpos.coords.latitude, gpos.coords.longitude);
     map.setCenter(userLoc);
+
+    // try out the API
+    xhr = new XMLHttpRequest;
+    xhr.open("POST", "https://jordan-marsh.herokuapp.com/rides");
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let cars = JSON.parse(xhr.responseText);
+
+            let markers = cars.map((car) => {
+                return {
+                    map : map,
+                    position : { lat : car.lat, lng : car.lng },
+                    icon : carIcon,
+                    id : car.id,
+                    username : car.username,
+                    created_on : car.created_on
+                }
+            });
+            markers.forEach((m) => {
+                new google.maps.Marker(m);
+            });
+        }
+    };
+    let reqParams = "username=xXoDw780&lat=" + gpos.coords.latitude + "&lng=" + gpos.coords.longitude;
+
+    xhr.send(reqParams);
 }
 function posError(err) { console.log("there was an error getting pos", err.message); }
 
 function initMap()
 {
+    navigator.geolocation.getCurrentPosition(posSuccess, posError);
     map = new google.maps.Map(document.getElementById("map"), {
         // map will start at south station in boston, then shift to user's location
         center: { 
@@ -20,52 +50,5 @@ function initMap()
         },
         zoom: 14,
     });
-    navigator.geolocation.getCurrentPosition(posSuccess, posError);
-    const carIcon = "https://tuftsdev.github.io/WebEngineering/assignments/summer2021/car.png";
-    const cars = 
-    [
-        new google.maps.Marker({
-            position: { lat: 42.3453, lng: -71.0464 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "mXfkjrFw",
-        }),
-        new google.maps.Marker({
-            position: { lat: 42.3662, lng: -71.0621 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "nZXB8ZHz",
-        }),
-        new google.maps.Marker({
-            position: { lat: 42.3603, lng: -71.0547 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "Tkwu74WC",
-        }),
-        new google.maps.Marker({
-            position: { lat: 42.3472, lng: -71.0802 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "5KWpnAJN",
-        }),
-        new google.maps.Marker({
-            position: { lat: 42.3663, lng: -71.0544 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "uf5ZrXYw",
-        }),
-        new google.maps.Marker({
-            position: { lat: 42.3542, lng: -71.0704 },
-            map: map,
-            icon: carIcon,
-
-            store_id: "VMerzMH8",
-        })
-    ];
 }
 

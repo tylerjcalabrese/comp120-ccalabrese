@@ -4,6 +4,7 @@ Comp 120: Web Programming with Prof. Ming Chow
 
 ## Parts Implemented
 I've gotten the map to center on the user's current location.
+I've figured out how to call the ride hailing API and display the results as markers on the map.
 
 ## Collaborators
 I'd like to acknowledge [this stack overflow post]
@@ -11,7 +12,7 @@ I'd like to acknowledge [this stack overflow post]
 for helping me figure out navigator.geolocation.
 
 ## Time Spent
-I've spent about an hour so far.
+I've spent about two hours so far.
 
 
 
