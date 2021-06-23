@@ -1,3 +1,20 @@
+# The Ride-Hailing Service, part 2
+by CR Calabrese, June - 22 - 2021
+Comp 120: Web Programming with Prof. Ming Chow
+
+## Parts Implemented
+I've gotten the map to center on the user's current location.
+
+## Collaborators
+I'd like to acknowledge [this stack overflow post]
+(https://stackoverflow.com/questions/17382128/google-maps-api-center-map-on-clients-current-location)
+for helping me figure out navigator.geolocation.
+
+## Time Spent
+I've spent about an hour so far.
+
+
+
 # The Ride-Hailing Service, part 1
 by CR Calabrese, June - 16 - 2021
 Comp 120: Web Programming with Prof. Ming Chow
