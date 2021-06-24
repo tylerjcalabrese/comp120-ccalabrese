@@ -8,6 +8,10 @@ function posSuccess(gpos)
 {
     userLoc = new google.maps.LatLng(gpos.coords.latitude, gpos.coords.longitude);
     map.setCenter(userLoc);
+    new google.maps.Marker({
+        map : map,
+        position : { lat : gpos.coords.latitude, lng : gpos.coords.longitude }
+    });
 
     // try out the API
     xhr = new XMLHttpRequest;
