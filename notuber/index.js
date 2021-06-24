@@ -1,17 +1,61 @@
 let map;
-
+let markers;
+let userLoc;
+let userMarker;
+let infowindow;
 
 const carIcon = "https://tuftsdev.github.io/WebEngineering/assignments/summer2021/car.png";
+
+function milesFromMeters(meters)
+{
+    return meters / 1609.34;
+}
+
+function markSelfWithClosestCar(cars)
+{
+    userMarker = new google.maps.Marker({
+        map : map,
+        position : userLoc
+    });
+    let userLat = userLoc.lat, userLng = userLoc.lng;
+    let closest = cars[0];
+    cars.forEach((car) => {
+        if (google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng({lat : car.position.lat, lng : car.position.lng}),
+                new google.maps.LatLng({lat : userLat, lng : userLng})) <
+            google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng({lat : closest.position.lat, lng : closest.position.lng}),
+                new google.maps.LatLng({lat : userLat, lng : userLng}))) closest = car;
+    });
+
+    let closestDistance = milesFromMeters(google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng({lat : closest.position.lat, lng : closest.position.lng}),
+            new google.maps.LatLng({lat : userLat, lng : userLng}))).toFixed(0);
+    let infoString = "The closest car is at (" + closest.position.lat + ", " + closest.position.lng +
+            "), and is " + closestDistance + " miles away.";
+    infowindow = new google.maps.InfoWindow({
+        content : infoString,
+    });
+    userMarker.addListener("click", () => {
+        infowindow.open({
+            anchor : userMarker,
+            map : map,
+        });
+    });
+    new google.maps.Polyline({
+        map : map,
+        path : [
+            { lat : userLoc.lat, lng : userLoc.lng },
+            { lat : closest.position.lat, lng : closest.position.lng }
+        ]
+    });
+}
 
 // callbacks for navigator.geolocation.getCurrentPosition()
 function posSuccess(gpos)
 {
-    userLoc = new google.maps.LatLng(gpos.coords.latitude, gpos.coords.longitude);
+    userLoc = {lat : gpos.coords.latitude, lng : gpos.coords.longitude};
     map.setCenter(userLoc);
-    new google.maps.Marker({
-        map : map,
-        position : { lat : gpos.coords.latitude, lng : gpos.coords.longitude }
-    });
 
     // try out the API
     xhr = new XMLHttpRequest;
@@ -22,7 +66,7 @@ function posSuccess(gpos)
         if (xhr.readyState == 4 && xhr.status == 200) {
             let cars = JSON.parse(xhr.responseText);
 
-            let markers = cars.map((car) => {
+            markers = cars.map((car) => {
                 return {
                     map : map,
                     position : { lat : car.lat, lng : car.lng },
@@ -35,6 +79,7 @@ function posSuccess(gpos)
             markers.forEach((m) => {
                 new google.maps.Marker(m);
             });
+            markSelfWithClosestCar(markers);
         }
     };
     let reqParams = "username=xXoDw780&lat=" + gpos.coords.latitude + "&lng=" + gpos.coords.longitude;
