@@ -6,6 +6,13 @@ let infowindow;
 
 const carIcon = "https://tuftsdev.github.io/WebEngineering/assignments/summer2021/car.png";
 
+function distanceFromUser(marker)
+{
+    return milesFromMeters(google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng({lat : marker.position.lat(), lng : marker.position.lng()}),
+            new google.maps.LatLng({lat : userLoc.lat, lng : userLoc.lng})));
+}
+
 function milesFromMeters(meters)
 {
     return meters / 1609.34;
@@ -17,22 +24,14 @@ function markSelfWithClosestCar(cars)
         map : map,
         position : userLoc
     });
-    let userLat = userLoc.lat, userLng = userLoc.lng;
     let closest = cars[0];
     cars.forEach((car) => {
-        if (google.maps.geometry.spherical.computeDistanceBetween(
-                new google.maps.LatLng({lat : car.position.lat, lng : car.position.lng}),
-                new google.maps.LatLng({lat : userLat, lng : userLng})) <
-            google.maps.geometry.spherical.computeDistanceBetween(
-                new google.maps.LatLng({lat : closest.position.lat, lng : closest.position.lng}),
-                new google.maps.LatLng({lat : userLat, lng : userLng}))) closest = car;
+        if (distanceFromUser(car) <
+            distanceFromUser(closest)) closest = car;
     });
 
-    let closestDistance = milesFromMeters(google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng({lat : closest.position.lat, lng : closest.position.lng}),
-            new google.maps.LatLng({lat : userLat, lng : userLng}))).toFixed(0);
     let infoString = "The closest car is at (" + closest.position.lat + ", " + closest.position.lng +
-            "), and is " + closestDistance + " miles away.";
+            "), and is " + distanceFromUser(closest).toFixed(0) + " miles away.";
     infowindow = new google.maps.InfoWindow({
         content : infoString,
     });
@@ -46,7 +45,7 @@ function markSelfWithClosestCar(cars)
         map : map,
         path : [
             { lat : userLoc.lat, lng : userLoc.lng },
-            { lat : closest.position.lat, lng : closest.position.lng }
+            { lat : closest.position.lat(), lng : closest.position.lng() }
         ]
     });
 }
@@ -66,7 +65,7 @@ function posSuccess(gpos)
         if (xhr.readyState == 4 && xhr.status == 200) {
             let cars = JSON.parse(xhr.responseText);
 
-            markers = cars.map((car) => {
+            markerinfo = cars.map((car) => {
                 return {
                     map : map,
                     position : { lat : car.lat, lng : car.lng },
@@ -76,10 +75,21 @@ function posSuccess(gpos)
                     created_on : car.created_on
                 }
             });
-            markers.forEach((m) => {
-                new google.maps.Marker(m);
+            mapmarkers = markerinfo.map((m) => {
+                return new google.maps.Marker(m);
             });
-            markSelfWithClosestCar(markers);
+            mapmarkers.forEach((m) => {
+                let iw = new google.maps.InfoWindow({
+                    content : distanceFromUser(m).toFixed(0) + " miles away",
+                });
+                m.addListener("click", () => {
+                    iw.open({
+                        anchor : m,
+                        map : map,
+                    });
+                });
+            });
+            markSelfWithClosestCar(mapmarkers);
         }
     };
     let reqParams = "username=xXoDw780&lat=" + gpos.coords.latitude + "&lng=" + gpos.coords.longitude;
