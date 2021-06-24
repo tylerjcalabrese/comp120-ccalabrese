@@ -3,7 +3,10 @@ by CR Calabrese, June - 22 - 2021
 Comp 120: Web Programming with Prof. Ming Chow
 
 ## Parts Implemented
-All parts besides the "Going Beyond" exercises have been implemented.
+All main parts of the exercise have been completed. Additionally, there is a marker on each
+car icon showing its distance from the user.
+
+Note: as usual, there is one console error, for a missing favicon.
 
 ## Collaborators
 I'd like to acknowledge [this stack overflow post]
@@ -11,7 +14,7 @@ I'd like to acknowledge [this stack overflow post]
 for helping me figure out navigator.geolocation.
 
 ## Time Spent
-I've spent about four hours.
+I've spent about four and a half hours.
 
 # The Ride-Hailing Service, part 1
 by CR Calabrese, June - 16 - 2021
