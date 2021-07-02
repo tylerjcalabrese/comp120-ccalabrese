@@ -58,7 +58,7 @@ function posSuccess(gpos)
 
     // try out the API
     xhr = new XMLHttpRequest;
-    xhr.open("POST", "https://jordan-marsh.herokuapp.com/rides");
+    xhr.open("POST", "https://evening-basin-73308.herokuapp.com/rides");
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
     xhr.onreadystatechange = () => {
