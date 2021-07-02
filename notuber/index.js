@@ -30,7 +30,9 @@ function markSelfWithClosestCar(cars)
             distanceFromUser(closest)) closest = car;
     });
 
-    let infoString = "The closest car is at (" + closest.position.lat + ", " + closest.position.lng +
+    console.log(closest);
+
+    let infoString = "The closest car is at (" + closest.position.lat() + ", " + closest.position.lng() +
             "), and is " + distanceFromUser(closest).toFixed(0) + " miles away.";
     infowindow = new google.maps.InfoWindow({
         content : infoString,
