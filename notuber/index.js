@@ -30,8 +30,6 @@ function markSelfWithClosestCar(cars)
             distanceFromUser(closest)) closest = car;
     });
 
-    console.log(closest);
-
     let infoString = "The closest car is at (" + closest.position.lat() + ", " + closest.position.lng() +
             "), and is " + distanceFromUser(closest).toFixed(0) + " miles away.";
     infowindow = new google.maps.InfoWindow({
@@ -96,7 +94,6 @@ function posSuccess(gpos)
     };
     let reqParams = "username=xXoDw780&lat=" + gpos.coords.latitude + "&lng=" + gpos.coords.longitude;
 
-    console.log("sending API request");
     xhr.send(reqParams);
 }
 function posError(err) { console.log("there was an error getting pos", err.message); }
@@ -104,7 +101,6 @@ function posError(err) { console.log("there was an error getting pos", err.messa
 function initMap()
 {
     navigator.geolocation.getCurrentPosition(posSuccess, posError);
-    console.log("creating map");
     map = new google.maps.Map(document.getElementById("map"), {
         // map will start at south station in boston, then shift to user's location
         center: { 
