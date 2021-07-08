@@ -100,7 +100,44 @@
              straightforward way to fix this severe vulnerability and would likely be worthwhile.</p>
           <p>Again, the validator library can be used. In this case, <code>validator.blacklist</code>
              should be run on the input to remove the suggested ' and ; characters, as in  
-            <code>var usernameEntry = validator.blacklist(request.query.username, "';");</code></p>
+            <code>var usernameEntry = validator.blacklist(request.query.username, "';");</code>. Another
+            option would be to use Node JS Postgres SQL parameterized query, the same type that is
+            used by the /update path, since this function is designed to reduce susceptibility to SQL
+            injection.</p>
+
+          <h3>3: Use of hard-coded credentials for updating vehicle table</h3>
+          <p>There is a set of whitelisted usernames that are allowed to update the vehicles table
+             in the /update path, but
+             that list of permitted usernames is hard-coded into server-vuln.js. This is the "inbound"
+             variety of <a href="https://cwe.mitre.org/data/definitions/798.html">CWE-798</a>, a member
+             of the "2020 CWE Top 25 Most Dangerous Software Weaknesses."</p>
+          <p>Though this vulnerability is somewhat severe in that it is a common one, the potential damage
+             is much lower because this path
+             uses the pgSQL parameterized query functionality to interact with the vehicles table. An
+             attacker could use this vulnerability to insert information into the table even though they
+             should not be authorized to, which would have serious consequences on the usefulness of the
+             website if the data in the vehicles table becomes inaccurate as a result. However, unlike
+             the previous vulnerability, arbitrary SQL can't be executed, so the attacker won't be able
+             to edit the schema or get unauthorized access to other users' information. Finally, becuase
+             this is an example of the "incoming" variant of CWE-798, it is less likely that the average
+             attacker will be able to discover it as compared to the "outgoing" variant. That being said,
+             once an authorized username is discovered by an attacker and shared with others, it will become
+             a widespread, difficult-to-fix issue that many malicious users can update the vehicles table
+             by hacking the authorization system -- therefore making the vehicles table (and the entire service)
+             useless. Furthermore, some of the usernames will be easily discoverable due to the previous SQL
+             injection issue. I  rate the severity of this vulnerability to be medium: It should be fixed before
+             attackers are able to discover any of the hard-coded usernames, but until then, the website
+             should function as normal. The other two issues are more urgent, especially because this
+             vulnerability does not allow for the execution of arbitrary code.</p>
+          <p>Below is the list of hard-coded usernames in the server code:</p>
+          <img src="images/usernames.png" width=500px />
+          <p>Fixing this issue will involve some changes to the overall design of the site as well as
+             open communication with the site's current users. First of all, all of these users should be
+             notified that their credentials
+             may have been compromised and asked to select a new username. Then, credentials should consist
+             of both a username and password and should be stored in a secure database rather than hard-coded.
+             This way, in the unfortunate event that credentials are compromised at some point in the future,
+             passwords can be changed with relatively little hassle, correcting the breach.</p>
       <h2>Conclusion</h2>
    </body>
 </html>
