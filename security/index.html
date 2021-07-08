@@ -6,12 +6,60 @@
    </head>
    <body>
       <h1>Security Assessment for Jordan Marsh's Website</h1>
-      <p>By C.R. Calabrese, July 7, 2021</p>
+          <p>By C.R. Calabrese, July 7, 2021</p>
 
       <h2>Introduction</h2>
+          <p>Jordan Marsh's website, "Not Uber," is a minimalist ride sharing service. Users can request
+             rides or post the message that they are offering a ride.</p>
+          <p>I was asked to write a report on this site's security practices, noting in particular any
+             specific security issues I can find and confirm to be active vulnerabilities of the site.
+             I was given the JavaScript code and package.json for the site and asked to find vulnerabilities
+             by any methods necessary -- both dynamic and static analysis; and black-box and white-box
+             testing. i.e. I looked for vulnerabilities with and without reading the source code; and I
+             analyzed the code without running it first, but then dynamically confirmed the vulnerabilites I
+             found by testing the actual behavior of the site. </p>
       <h2>Methodology</h2>
+          <p>I didn't have a full spec or README for the website readily available to me, besides my familiarity
+             with similar
+             "Not Uber" rideshare services. So, to start, I needed to get a sense of the site's available
+             paths and intended functionality. First, I went to the main page of the site. I got the sense from
+             that page that the site had already been compromised. Then I skimmed the source code to see what
+             kinds of requests the site will respond to and what the website is supposed to do.</p>
+          <p></p>
       <h2>Abstract of Findings</h2>
+          <p>Jordan Marsh's "Not Uber" site has some pretty severe vulnerabilites that must be addressed
+             immediately.</p>
+          <p>Firstly, the main page of the site is vulnerable to cross-site scripting, meaning attackers
+             are able to edit the page itself and even execute arbitrary JavaScript code without any
+             authorization. I noticed this immediately because attackers had already inserted JavaScript
+             alerts and HTML elements via the ride-posting feature of the site that were clearly not
+             intended to be there. Some of these elements even linked to other sites, such as images and
+             an embedded playlist sourced from other places on the web. This is dire because it means
+             other scripts (essentially, more or less arbitrary code) could be sourced as well, destroying
+             the site.</p>
       <h2>Issues Found</h2>
+          <h3>1: Cross-site scripting on the main page of the site</h3>
+          <p>The main page of the website's purpose is to load a list of passengers who are waiting for a
+             ride. This seems innocent enough, but the list of passengers comes from a SQL database of 
+             passengers that any user can submit to without any authorization. Then, the passenger
+             information is not sanitized at all before being rendered as HTML.</p>
+          <p>This means more-or-less arbitrary JavaScript code can be executed fairly easily by submitting
+             it as a rider's username. For example, by taking advantage of this cross-site scripting
+             vulnerability, I was able to make the home page redirect to another URL of my choice. Though
+             I chose something fairly innocuous, it still rendered the site unusable -- and a malicious hacker
+             could do much worse. Therefore, the severity of this issue is high.</p>
+          <img src="images/redirect-how.png" width=500px />
+          <img src="images/redirect-result.png" width=500px />
+          <p>It's crucial to fix this issue by sanitizing user inputs to the passengers database. The most
+             straightforward way to alleviate this issue would be to limit the length of passenger usernames.
+             Usernames typically don't need to be very long, and if there isn't enough room to fit an
+             opening script tag and src attribute, then hackers will not have such a simple way to execute
+             their own code on the site. Note that the character limit should be pretty low, to avoid
+             hackers using URL shorteners to bypass this.</p>
+          <p>Input can also be sanitized by removing characters that are necessary to execute JavaScript
+             from this part of the page. For example, the &lt; and &gt; characters typically aren't needed for
+             a username, but would prevent an attacker from closing and opening HTML tags using their
+             username listing.</p>
       <h2>Conclusion</h2>
    </body>
 </html>
