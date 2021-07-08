@@ -25,18 +25,37 @@
              paths and intended functionality. First, I went to the main page of the site. I got the sense from
              that page that the site had already been compromised. Then I skimmed the source code to see what
              kinds of requests the site will respond to and what the website is supposed to do.</p>
-          <p></p>
+          <p>The code proved to be a promising starting point, and for each path of the site I read the source
+             code for inspiration as to what possible vulnerabilities might exist. Then, upon finding a
+             suspected vulnerability, I used Postman to test whether I could breach the site.
+          </p>
+          <p>For further ideas of vulnerabilities to look out for, I referenced Mitre's
+             "2020 CWE Top 25 Most Dangerous Software Weaknesses" list.
+          </p>
+          <p>I used Burp suite's proxy to prevent unwanted redirects and popups put in place by other
+             attackers, and OWASP ZAP to scan the site for potential vulnerabilities.
+          </p>
       <h2>Abstract of Findings</h2>
-          <p>Jordan Marsh's "Not Uber" site has some pretty severe vulnerabilites that must be addressed
+          <p>Jordan Marsh's "Not Uber" site has severe vulnerabilites that must be addressed
              immediately.</p>
           <p>Firstly, the main page of the site is vulnerable to cross-site scripting, meaning attackers
-             are able to edit the page itself and even execute arbitrary JavaScript code without any
-             authorization. I noticed this immediately because attackers had already inserted JavaScript
-             alerts and HTML elements via the ride-posting feature of the site that were clearly not
-             intended to be there. Some of these elements even linked to other sites, such as images and
-             an embedded playlist sourced from other places on the web. This is dire because it means
-             other scripts (essentially, more or less arbitrary code) could be sourced as well, destroying
-             the site.</p>
+             are able to edit the webpage itself and even execute arbitrary code without any
+             authorization. I noticed this immediately because attackers had clearly already found this
+             vulnerability before I first accessed the site. This is dire because it means
+             other scripts (essentially, arbitrary code) could be sourced, destroying
+             the site or even spreading malware.</p>
+          <p>Secondly, parts of the site that interact with its SQL database are vulnerable to SQL injection,
+             meaning that a hacker could craft a special query that does additional, unauthorized things to
+             the database. The potential effects of this are very serious, even including the possibility of
+             a hacker erasing all of the data in the database or accessing users' confidential information.</p>
+          <p>Finally, the list of credentials for the "update" path is hard-coded into the site's JavaScript code,
+             meaning if a username is compromised, it will be difficult to fix the breach and attackers will be
+             able to bypass the authorization system and insert incorrect information into the vehicles table,
+             compromising the usefulness of the site. This also indicates a design flaw in the site, since
+             fixing this issue will require that all currently registered users of the site change their usernames.
+             When fixing the issue of hard-coded credentials, the authorization system shouls also be changed so
+             both a username and password are required. This way, in the event of a breach, the credentials
+             can be updated by simply changing the passwords.</p>
 
       <h2>Issues Found</h2>
           <h3>1: Cross-site scripting on the main page of the site</h3>
@@ -70,10 +89,12 @@
              by preventing attackers from opening and closing HTML tags. Whatever script they attempted to use
              would simply show up as a literal string for their username.</p>
 
-          <h3>2: SQL Injection in vehicles table query</h3>
+          <h3>2: SQL Injection in table queries</h3>
           <p>This issue is rather similar to the first issue, though instead of having to do with the HTML and 
-            JavaScript of the webpage itself, it has to do with the server's interaction with its SQL database.</p>
-          <p>The vehicles.json route of the site is meant to allow users to look up all vehicles for the given 
+            JavaScript of the webpage itself, it has to do with the server's interaction with its SQL database.
+            It occurs in exactly the same manner in the vehicles.json and passenger.json paths. I will refer to
+            the vehicles path as my example.</p>
+          <p>These routes are meant to allow users to look up all vehicles for the given 
              username. However, because the input isn't sanitized at all, attackers can inject arbitrary SQL
              code into their queries and manipulate the database.</p>
           <p>Below is an example of how one could use SQL injection to access information which they are not meant
@@ -139,5 +160,23 @@
              This way, in the unfortunate event that credentials are compromised at some point in the future,
              passwords can be changed with relatively little hassle, correcting the breach.</p>
       <h2>Conclusion</h2>
+          <p>In conclusion, the most obvious and urgent security practice that should be implemented on Jordan
+             Marsh's "Not Uber" site is a relatively low-cost one: all user input must be sanitized. This will
+             prevent devastating cross-site scripting attacks and can be implemented conveniently using the
+             validator library.
+          </p>
+          <p>Another security practice to consider implementing is using passwords in the authorization system,
+             and storing credentials in a secure database rather than hard-coding them into the source code of
+             the site. This is still relatively low-cost but will require a minor disruption to current users of
+             the site. Though there are inherent costs in communicating to users that the credential system
+             needs improvement, this is important to protect their accounts from future, difficult-to-fix
+             breaches.</p>
+          <p>Finally, a parting word of advice that is not covered in depth in this report is to consider
+             the site's susceptibility to DDoS attacks. In my assessment of the site, I didn't notice any
+             mechanisms to prevent users from sending a high number of requests to the site, rendering it
+             useless. Securing the site against DDoS attacks will likely be more costly and labor-intensive
+             than my other recommendations, and is somewhat less urgent to implement, but will be
+             worthwhile nonetheless.
+          </p>
    </body>
 </html>
