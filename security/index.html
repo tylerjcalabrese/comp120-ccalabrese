@@ -16,13 +16,14 @@
              I was given the JavaScript code and package.json for the site and asked to find vulnerabilities
              by any methods necessary -- both dynamic and static analysis; and black-box and white-box
              testing. i.e. I looked for vulnerabilities with and without reading the source code; and I
-             analyzed the code without running it first, but then dynamically confirmed the vulnerabilites I
+             analyzed the code without running it first, but then dynamically confirmed two of the vulnerabilites I
              found by testing the actual behavior of the site. </p>
       <h2>Methodology</h2>
           <p>I didn't have a full spec or README for the website readily available to me, besides my familiarity
              with similar
              "Not Uber" rideshare services. So, to start, I needed to get a sense of the site's available
-             paths and intended functionality. First, I went to the main page of the site. I got the sense from
+             paths and intended functionality. First, I logged on to the main page of the site, using a
+             proxy with intercept to protect myself from any malware. I got the sense from
              that page that the site had already been compromised. Then I skimmed the source code to see what
              kinds of requests the site will respond to and what the website is supposed to do.</p>
           <p>The code proved to be a promising starting point, and for each path of the site I read the source
