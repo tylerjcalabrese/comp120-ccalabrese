@@ -51,7 +51,8 @@
              could do much worse. Therefore, the severity of this issue is high.</p>
           <img src="images/redirect-how.png" width=500px />
           <img src="images/redirect-result.png" width=500px />
-          <p>It's crucial to fix this issue by sanitizing user inputs to the passengers database. The most
+          <p>It's crucial to fix this issue by sanitizing user inputs to the passengers database (in other words, 
+             at the /rides path). The most
              straightforward way to alleviate this issue would be to limit the length of passenger usernames.
              Usernames typically don't need to be very long, and if there isn't enough room to fit an
              opening script tag and src attribute, then hackers will not have such a simple way to execute
@@ -61,6 +62,13 @@
              from this part of the page. For example, the &lt; and &gt; characters typically aren't needed for
              a username, but would prevent an attacker from closing and opening HTML tags using their
              username listing.</p>
+          <p>Finally, libraries such as 
+             <a href="https://github.com/validatorjs/validator.js">https://github.com/validatorjs/validator.js</a>
+             can be used to conveniently sanitize user input and prevent cross-site scripting attacks. For the
+             /rides path, writing <code>var username = validator.escape(request.body.username);</code> instead of
+             <code>var username = request.body.username;</code> would prevent JavaScript from being executed
+             by preventing attackers from opening and closing HTML tags. Whatever script they attempted to use
+             would simply show up as a literal string for their username.</p>
 
           <h3>2: SQL Injection in vehicles table query</h3>
           <p>This issue is rather similar to the first issue, though instead of having to do with the HTML and 
@@ -89,8 +97,10 @@
              mark the end of the username query string, and the semicolon allows for execution of multiple
              SQL statements by allowing the attacker to end one statement. Though some names include the
              character ', so this policy might be an inconvenience to some users, it is a relatively
-             straightforward way to fix this severe vulnerability and would likely be worthwhile.
-          </p>
+             straightforward way to fix this severe vulnerability and would likely be worthwhile.</p>
+          <p>Again, the validator library can be used. In this case, <code>validator.blacklist</code>
+             should be run on the input to remove the suggested ' and ; characters, as in  
+            <code>var usernameEntry = validator.blacklist(request.query.username, "';");</code></p>
       <h2>Conclusion</h2>
    </body>
 </html>
