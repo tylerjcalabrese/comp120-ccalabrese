@@ -37,6 +37,7 @@
              an embedded playlist sourced from other places on the web. This is dire because it means
              other scripts (essentially, more or less arbitrary code) could be sourced as well, destroying
              the site.</p>
+
       <h2>Issues Found</h2>
           <h3>1: Cross-site scripting on the main page of the site</h3>
           <p>The main page of the website's purpose is to load a list of passengers who are waiting for a
@@ -60,6 +61,36 @@
              from this part of the page. For example, the &lt; and &gt; characters typically aren't needed for
              a username, but would prevent an attacker from closing and opening HTML tags using their
              username listing.</p>
+
+          <h3>2: SQL Injection in vehicles table query</h3>
+          <p>This issue is rather similar to the first issue, though instead of having to do with the HTML and 
+            JavaScript of the webpage itself, it has to do with the server's interaction with its SQL database.</p>
+          <p>The vehicles.json route of the site is meant to allow users to look up all vehicles for the given 
+             username. However, because the input isn't sanitized at all, attackers can inject arbitrary SQL
+             code into their queries and manipulate the database.</p>
+          <p>Below is an example of how one could use SQL injection to access information which they are not meant
+             to see, which is all of the vehicles for every user of the site:</p>
+          <img src="images/sql-inject.png" width=500px />
+          <p>Breach of users' privacy is on its own quite dire. However, attackers could do even worse by
+             using a ; in their query to execute multiple SQL statements. Arbitrary SQL could be injected here,
+             so an attacker could go so far as to even alter or remove entire tables or schemas, as one of my
+             colleagues did earlier today.</p>
+          <p>Furthermore, SQL injection, like cross-site scripting, is a common vulnerability and often the
+             first thing an attacker will try. Because this vulnerability is so likely to be discovered and can
+             lead to breach of users' privacy or even loss or corruption of their data, the severity of this
+             vulnerability is high.</p>
+          <p>The remedies to this issue are similar to those for the cross-site scripting vulnerability.
+             Namely, user input should be sanitized. Again, there should be a character limit on usernames, and
+             the query should be truncated to that length as a simple way of cutting back on this issue. If there
+             is no room to write syntactically correct SQL, it is much harder for attackers to execute
+             arbitrary code.</p>
+          <p>Furthermore, as in the other vulnerability, input could be sanitized by removing significant
+             characters such as ' and ;. The single quote allows for SQL injection by letting the attacker
+             mark the end of the username query string, and the semicolon allows for execution of multiple
+             SQL statements by allowing the attacker to end one statement. Though some names include the
+             character ', so this policy might be an inconvenience to some users, it is a relatively
+             straightforward way to fix this severe vulnerability and would likely be worthwhile.
+          </p>
       <h2>Conclusion</h2>
    </body>
 </html>
